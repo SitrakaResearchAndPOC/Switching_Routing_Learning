@@ -1,0 +1,142 @@
+TP : Sous-réseau classique et VLSM avec Docker
+🎯 Objectifs
+
+Comprendre les sous-réseaux classiques et VLSM
+
+Créer des réseaux Docker avec ces sous-réseaux
+
+Lancer des conteneurs avec IP statique
+
+Tester la connectivité entre conteneurs
+
+Visualiser l’adressage IP
+
+1️⃣ Prérequis
+
+Installer Docker si nécessaire :
+
+sudo apt update
+sudo apt install docker.io -y
+sudo systemctl enable --now docker
+
+2️⃣ Sous-réseau classique
+Concept
+
+Tous les sous-réseaux ont le même masque (/24)
+
+Ici, deux sous-réseaux :
+
+192.168.100.64/24
+
+192.168.100.128/24
+
+Étape 1 : créer les réseaux Docker
+docker network create --subnet=192.168.100.64/24 subnet_classic1
+docker network create --subnet=192.168.100.128/24 subnet_classic2
+
+Étape 2 : lancer les conteneurs
+# Sous-réseau 1
+docker run -dit --name vmC1 --net subnet_classic1 --ip 192.168.100.65 ubuntu:22.04 bash
+docker run -dit --name vmC2 --net subnet_classic1 --ip 192.168.100.66 ubuntu:22.04 bash
+
+# Sous-réseau 2
+docker run -dit --name vmC3 --net subnet_classic2 --ip 192.168.100.129 ubuntu:22.04 bash
+docker run -dit --name vmC4 --net subnet_classic2 --ip 192.168.100.130 ubuntu:22.04 bash
+
+Étape 3 : tester la connectivité
+
+Même sous-réseau :
+
+docker exec vmC1 ping -c 3 192.168.100.66
+
+
+Sous-réseaux différents (isolés par Docker) :
+
+docker exec vmC1 ping -c 3 192.168.100.129
+
+
+Le ping échouera car Docker isole les sous-réseaux différents.
+
+3️⃣ Sous-réseau VLSM (masques variables)
+Concept
+
+Taille des sous-réseaux adaptée au nombre de machines nécessaires
+
+Exemple :
+
+Sous-réseau A → 50 machines → /26
+
+Sous-réseau B → 10 machines → /28
+
+Sous-réseau C → 5 machines → /29
+
+On utilise ici les blocs /24 comme réseau parent, puis VLSM à l’intérieur :
+
+192.168.100.64/24 → sous-réseaux internes : /26, /28
+
+192.168.100.128/24 → sous-réseaux internes : /26, /29
+
+Étape 1 : créer les sous-réseaux Docker
+# Dans le bloc 192.168.100.64/24
+docker network create --subnet=192.168.100.64/26 subnetA_vlsm   # 64 adresses
+docker network create --subnet=192.168.100.128/28 subnetB_vlsm  # 16 adresses
+
+# Dans le bloc 192.168.100.128/24
+docker network create --subnet=192.168.100.160/26 subnetC_vlsm  # 64 adresses
+docker network create --subnet=192.168.100.224/29 subnetD_vlsm  # 8 adresses
+
+Étape 2 : lancer les conteneurs
+# Subnet A
+docker run -dit --name vlsmA1 --net subnetA_vlsm --ip 192.168.100.65 ubuntu:22.04 bash
+docker run -dit --name vlsmA2 --net subnetA_vlsm --ip 192.168.100.66 ubuntu:22.04 bash
+
+# Subnet B
+docker run -dit --name vlsmB1 --net subnetB_vlsm --ip 192.168.100.129 ubuntu:22.04 bash
+
+# Subnet C
+docker run -dit --name vlsmC1 --net subnetC_vlsm --ip 192.168.100.161 ubuntu:22.04 bash
+
+# Subnet D
+docker run -dit --name vlsmD1 --net subnetD_vlsm --ip 192.168.100.225 ubuntu:22.04 bash
+
+Étape 3 : tester la connectivité
+
+Même sous-réseau :
+
+docker exec vlsmA1 ping -c 3 192.168.100.66
+docker exec vlsmC1 ping -c 3 192.168.100.162  # si tu ajoutes un second conteneur
+
+
+Sous-réseaux différents (isolés par Docker) :
+
+docker exec vlsmA1 ping -c 3 192.168.100.129
+
+4️⃣ Affichage des interfaces et IP
+
+Dans n’importe quel conteneur :
+
+docker exec vlsmA1 ip addr show
+docker exec vlsmA1 ifconfig
+
+5️⃣ Exercices pratiques
+
+Ajouter un deuxième conteneur dans subnetB_vlsm et tester la connectivité.
+
+Calculer pour chaque sous-réseau :
+
+Adresse réseau
+
+Adresse broadcast
+
+Plage d’adresses utilisables
+
+Modifier un conteneur pour utiliser une autre IP dans le même sous-réseau et vérifier ping.
+
+6️⃣ Résumé
+Type	Exemple de bloc	Masque	Avantage
+Classique	192.168.100.64/24 et 192.168.100.128/24	/24 pour tous	Simple à configurer
+VLSM	Sous-réseaux internes /26, /28, /29	Variable	Optimisation des adresses IP, moins de gaspillage
+
+Si tu veux, je peux te faire un schéma clair avec tous les sous-réseaux, les conteneurs et leurs IP, pour que ce TP soit très visuel et pédagogique.
+
+Veux‑tu que je fasse ça ?
