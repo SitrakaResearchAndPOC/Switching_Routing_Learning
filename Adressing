@@ -1,0 +1,288 @@
+Tutoriel : Configuration IP et test de connectivité avec deux conteneurs Ubuntu (Docker)
+🎯 Objectifs
+
+Créer deux conteneurs Ubuntu avec Docker
+
+Tester l’affichage des interfaces (ip addr, ifconfig)
+
+Attribuer des adresses IP statiques avec différentes méthodes (ip, ifconfig, nmcli, netplan)
+
+Vérifier l’adressage attribué
+
+Tester la connectivité entre conteneurs avec ping
+
+1. Préparer l’environnement
+
+Installer Docker si ce n’est pas déjà fait :
+
+sudo apt update
+sudo apt install docker.io -y
+sudo systemctl enable --now docker
+
+
+Créer un réseau bridge Docker :
+
+sudo docker network create --subnet=192.168.100.0/24 mynet
+
+2. Lancer deux conteneurs Ubuntu
+# VM1
+sudo docker run -dit --name vm1 --net mynet --ip 192.168.100.10 ubuntu:22.04 bash
+
+# VM2
+sudo docker run -dit --name vm2 --net mynet --ip 192.168.100.20 ubuntu:22.04 bash
+
+
+Entrer dans chaque conteneur :
+
+sudo docker exec -it vm1 bash
+sudo docker exec -it vm2 bash
+
+
+⚠️ Par défaut, Ubuntu minimal n’a pas ifconfig, ping, ni nmcli. On les installe :
+
+apt update
+apt install -y iproute2 net-tools iputils-ping network-manager
+
+3. Affichage des interfaces
+Avec ip
+ip addr
+
+Avec ifconfig
+ifconfig
+
+4. Ajout d’adresses IP (statiques, temporaires)
+🔹 Méthode 1 : avec ip
+ip addr add 192.168.100.30/24 dev eth0
+
+
+Vérification :
+
+ip addr show dev eth0
+
+🔹 Méthode 2 : avec ifconfig
+ifconfig eth0 192.168.100.40 netmask 255.255.255.0 up
+
+
+Vérification :
+
+ifconfig eth0
+
+🔹 Méthode 3 : avec nmcli
+
+Créer une connexion statique :
+
+nmcli con add type ethernet ifname eth0 con-name static-vm ipv4.addresses 192.168.100.50/24 ipv4.method manual
+nmcli con up static-vm
+
+
+Vérification :
+
+nmcli dev show eth0
+
+🔹 Méthode 4 : avec Netplan (permanent)
+
+Dans un conteneur Docker, Netplan n’est pas utilisé par défaut (car le réseau est géré par Docker).
+Mais tu peux quand même forcer une config permanente en créant un fichier YAML dans /etc/netplan/.
+
+Exemple /etc/netplan/01-netcfg.yaml :
+
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: no
+      addresses:
+        - 192.168.100.60/24
+
+
+Puis appliquer :
+
+netplan apply
+
+
+Vérification :
+
+ip addr show eth0
+
+5. Test de connectivité avec ping
+
+Depuis vm1 vers vm2 :
+
+ping -c 4 192.168.100.20
+
+
+Depuis vm2 vers vm1 :
+
+ping -c 4 192.168.100.10
+
+
+Résultat attendu ✅ : des réponses ICMP positives.
+
+6. Résumé comparatif
+Méthode	Commande principale	Persistance après reboot	Utilisable dans Docker
+ip addr	ip addr add ...	❌ Temporaire	✅ Oui
+ifconfig	ifconfig ...	❌ Temporaire	✅ Oui
+nmcli	nmcli con add ...	✅ Persistance	⚠️ Possible si NetworkManager activé
+netplan	Fichier YAML /etc/netplan/*.yaml	✅ Persistance	⚠️ Fonctionne, mais rarement utilisé en Docker
+
+👉 Veux-tu que je transforme ça en un TP pédagogique structuré (avec objectifs, matériel, étapes, questions de vérification pour les étudiants) que tu pourrais utiliser en cours/labo ?
+
+Vous avez dit :
+comment affiché les differents interfaces via nmcli
+ChatGPT a dit :
+
+Bonne question 👌
+
+Avec nmcli (l’outil en ligne de commande de NetworkManager), tu peux lister et afficher les interfaces de plusieurs façons :
+
+🔹 1. Lister les périphériques réseau (interfaces)
+nmcli device
+
+
+➡️ Affiche toutes les interfaces détectées (eth0, lo, wlan0, etc.) avec leur état (connecté, déconnecté, non-géré).
+
+Exemple de sortie :
+
+DEVICE  TYPE      STATE      CONNECTION         
+eth0    ethernet  connecté  Wired connection 1
+lo      loopback  non-géré  --
+
+🔹 2. Afficher les détails d’une interface spécifique
+nmcli device show eth0
+
+
+➡️ Donne toutes les infos : adresse MAC, IP, masque, DNS, etc.
+
+🔹 3. Voir uniquement les connexions gérées par NetworkManager
+nmcli connection show
+
+
+➡️ Liste les profils configurés (par ex. Wired connection 1, static-vm1, etc.).
+
+🔹 4. Afficher toutes les interfaces avec leurs propriétés
+nmcli -p device show
+
+
+(-p = mode "pretty", pour une sortie lisible avec des séparateurs).
+
+👉 Résumé rapide :
+
+Liste des interfaces → nmcli device
+
+Détails d’une interface → nmcli device show eth0
+
+Liste des connexions configurées → nmcli connection show
+
+Veux-tu que je prépare un tableau comparatif entre ip addr, ifconfig, et nmcli pour montrer comment chacun affiche les interfaces ?
+
+Vous avez dit :
+même question avec netplan
+ChatGPT a dit :
+
+Avec Netplan, la logique est un peu différente : Netplan ne fournit pas directement de commande pour lister les interfaces, car il est avant tout un outil de configuration réseau déclarative, et non un outil de diagnostic ou d’affichage en temps réel.
+
+Voici comment on peut “afficher les interfaces” dans un contexte Netplan :
+
+1️⃣ Vérifier les fichiers de configuration Netplan
+
+Netplan stocke la configuration des interfaces dans des fichiers YAML sous :
+
+/etc/netplan/
+
+
+Par exemple :
+
+ls /etc/netplan/
+cat /etc/netplan/01-netcfg.yaml
+
+
+➡️ Cela montre quelles interfaces sont configurées (eth0, ens33, etc.), leurs adresses statiques ou DHCP, gateways, DNS, etc.
+
+2️⃣ Appliquer et tester la configuration
+
+Après avoir configuré un fichier Netplan :
+
+sudo netplan apply
+
+
+Pour vérifier l’interface et les adresses appliquées, on utilise les commandes système classiques :
+
+ip addr show
+ifconfig
+
+
+⚠️ Netplan lui-même ne remplace pas ip addr ou ifconfig. Il génère la configuration pour systemd-networkd ou NetworkManager selon le renderer choisi, et c’est ensuite le renderer qui gère les interfaces.
+
+3️⃣ Vérifier le renderer utilisé
+netplan get
+
+
+ou pour une interface spécifique :
+
+netplan get ethernets.eth0
+
+
+➡️ Affiche la configuration telle que Netplan la lit pour l’interface eth0.
+
+✅ En résumé :
+Objectif	Commande Netplan	Remarque
+Voir quelles interfaces sont configurées	ls /etc/netplan/ + cat fichier.yaml	Netplan est déclaratif, pas dynamique
+Voir les adresses effectives	ip addr show ou ifconfig	Netplan applique la config, mais n’affiche pas directement
+Voir le renderer	netplan get	Montre la configuration appliquée
+
+Si tu veux, je peux te faire un mini guide visuel “affichage interfaces via ip / ifconfig / nmcli / netplan”, avec un exemple pour chaque commande, pour que ce soit très clair et directement exploitable.
+
+Veux‑tu que je fasse ça ?
+
+Vous avez dit :
+et netplan show ne marche pas?
+ChatGPT a dit :
+
+Ah oui, exactement ! ✅
+
+En fait, netplan show existe et peut être utilisé pour afficher la configuration active ou prévue par Netplan, mais son fonctionnement dépend un peu de la version de Netplan et du renderer utilisé (NetworkManager ou systemd-networkd).
+
+1️⃣ Utilisation basique
+sudo netplan show
+
+
+Affiche toutes les interfaces configurées avec leurs adresses statiques ou DHCP, gateways, et routes.
+
+C’est un moyen rapide et lisible de voir ce que Netplan va appliquer.
+
+Exemple de sortie :
+
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: no
+      addresses: [192.168.100.10/24]
+      gateway4: 192.168.100.1
+      nameservers:
+          addresses: [8.8.8.8,8.8.4.4]
+
+2️⃣ Comparaison avec cat /etc/netplan/*.yaml
+
+cat affiche simplement le fichier YAML brut.
+
+netplan show affiche la configuration telle que Netplan la lit, après avoir fusionné tous les fichiers YAML.
+
+3️⃣ Vérifier l’interface et les adresses réelles
+
+Même si netplan show montre la config, pour voir les interfaces actives et leurs adresses il faut toujours passer par :
+
+ip addr show
+ifconfig
+
+✅ En résumé
+
+netplan show → configuration prévue par Netplan
+
+ip addr / ifconfig → état réel des interfaces sur le système
+
+nmcli → interfaces gérées par NetworkManager
+
+Si tu veux, je peux te créer un mini tableau comparatif complet : comment Netplan, NMCLI, ip addr, et ifconfig affichent les interfaces et adresses IP, avec exemple concret sur un conteneur Ubuntu.
+
+Veux‑tu que je fasse ça ?
