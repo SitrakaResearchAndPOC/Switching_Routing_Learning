@@ -53,9 +53,9 @@ sudo usermod -aG docker $USER
 docker pull ubuntu:24.04
 
 Étape 3 : Créer les conteneurs
-docker run -dit --name pc_employe --hostname pc_employe ubuntu:24.04
-docker run -dit --name pc_rh --hostname pc_rh ubuntu:24.04
-docker run -dit --name pc_finance --hostname pc_finance ubuntu:24.04
+docker run -dit --name pc_employe --hostname  --privileged  pc_employe ubuntu:24.04
+docker run -dit --name pc_rh --hostname pc_rh  --privileged ubuntu:24.04
+docker run -dit --name pc_finance --hostname pc_finance  --privileged ubuntu:24.04
 
 docker run -dit --name r1 --hostname r1 --privileged ubuntu:24.04
 docker run -dit --name r2 --hostname r2 --privileged ubuntu:24.04
@@ -76,17 +76,17 @@ docker network connect --ip 192.168.20.10 rh_net pc_rh
 docker network connect --ip 192.168.30.10 finance_net pc_finance
 
 # R1
-docker network connect --ip 192.168.10.1 employes_net r1
-docker network connect --ip 192.168.12.2 r1_r2_net r1
+docker network connect --ip 192.168.10.2 employes_net r1
+docker network connect --ip 192.168.12.3 r1_r2_net r1
 
 # R2
-docker network connect --ip 192.168.12.3 r1_r2_net r2
-docker network connect --ip 192.168.20.1 rh_net r2
-docker network connect --ip 192.168.23.2 r2_r3_net r2
+docker network connect --ip 192.168.12.2 r1_r2_net r2
+docker network connect --ip 192.168.20.2 rh_net r2
+docker network connect --ip 192.168.23.3 r2_r3_net r2
 
 # R3
-docker network connect --ip 192.168.23.3 r2_r3_net r3
-docker network connect --ip 192.168.30.1 finance_net r3
+docker network connect --ip 192.168.23.2 r2_r3_net r3
+docker network connect --ip 192.168.30.2 finance_net r3
 
 Étape 6 : Installer les outils réseau dans les conteneurs
 # PC Employé
