@@ -1,0 +1,24 @@
+Exercice 2 : Cisco Packet Tracer – Routage statique avec 3 routeurs
+
+Mettre en place un réseau avec :
+ R1 connecté au réseau Employés
+ R2 connecté au réseau Ressources Humaines
+ R3 connecté au réseau Ressources Financières
+ Lien R1 ↔ R2 et R2 ↔ R3
+
+ Permettre :
+o Employés ↔ Ressources Humaines
+o Employés ↔ Ressources Financières
+
+Topologie
+[PC Employé] --- R1 --- R2 --- R3 --- [PC Finance]
+                        |
+                [PC Ress. Humaines]
+
+Plan d’adressage IP
+PC employé 192.168.10/24
+Liens R1-R2 192.168.12/30
+PC Ress. Humaines  192.168.20/24
+Liens R2-R3 192.168.23/30
+PC Finance  192.168.30/24
+Gateway : *.254
