@@ -53,7 +53,7 @@ sudo usermod -aG docker $USER
 docker pull ubuntu:24.04
 
 Étape 3 : Créer les conteneurs
-docker run -dit --name pc_employe --hostname  --privileged  pc_employe ubuntu:24.04
+docker run -dit --name pc_employe --hostname   pc_employe  --privileged ubuntu:24.04
 docker run -dit --name pc_rh --hostname pc_rh  --privileged ubuntu:24.04
 docker run -dit --name pc_finance --hostname pc_finance  --privileged ubuntu:24.04
 
@@ -137,38 +137,41 @@ Pour chaque machine ou conteneur, on ajoute la route par défaut vers la gateway
 # PC Employé
 docker exec -it pc_employe bash
 ip route del default || true
-ip route add default via 192.168.10.1
+ip route add default via 192.168.10.2
 exit
 
 # PC RH
 docker exec -it pc_rh bash
 ip route del default || true
-ip route add default via 192.168.20.1
+ip route add default via 192.168.20.2
 exit
 
 # PC Finance
 docker exec -it pc_finance bash
 ip route del default || true
-ip route add default via 192.168.30.1
+ip route add default via 192.168.30.2
 exit
 
 # R1
 docker exec -it r1 bash
-# routes vers les autres sous-réseaux
-ip route add 192.168.20.0/24 via 192.168.12.3
-ip route add 192.168.30.0/24 via 192.168.12.3
+ip route add 192.168.20.0/24 via 192.168.12.2
+ip route add 192.168.30.0/24 via 192.168.12.2
+ip route add 192.168.23.0/29 via 192.168.12.2
 exit
 
 # R2
 docker exec -it r2 bash
-ip route add 192.168.10.0/24 via 192.168.12.2
-ip route add 192.168.30.0/24 via 192.168.23.3
+ip route add 192.168.10.0/24 via 192.168.12.3
+ip route add 192.168.30.0/24 via 192.168.23.2
+ip route add 192.168.12.0/29 via 192.168.12.3
+ip route add 192.168.23.0/29 via 192.168.23.2
 exit
 
 # R3
 docker exec -it r3 bash
 ip route add 192.168.10.0/24 via 192.168.23.2
 ip route add 192.168.20.0/24 via 192.168.23.2
+ip route add 192.168.12.0/29 via 192.168.23.2
 exit
 
 Étape 9 : Vérifications
