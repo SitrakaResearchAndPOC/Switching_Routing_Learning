@@ -17,8 +17,182 @@ Topologie
 
 Plan d’adressage IP
 PC employé 192.168.10/24
-Liens R1-R2 192.168.12/30
+Liens R1-R2 192.168.12/29
 PC Ress. Humaines  192.168.20/24
-Liens R2-R3 192.168.23/30
+Liens R2-R3 192.168.23/29
 PC Finance  192.168.30/24
 Gateway : *.254
+
+# Mise en place réseau Docker Ubuntu 24.04 avec IP statiques et `/29`
+
+## Plan IP modifié
+
+| Machine / Interface         | IP / Masque        | Gateway par défaut        |
+|----------------------------|---------------------|----------------------------|
+| **PC Employé**             | 192.168.10.10/24    | 192.168.10.1              |
+| **Employés réseau** (R1)   | 192.168.10.1/24     | —                          |
+| **PC Ress. Humaines**      | 192.168.20.10/24    | 192.168.20.1              |
+| **Ress. Humaines réseau** (R2) | 192.168.20.1/24    | —                      |
+| **PC Finance**             | 192.168.30.10/24    | 192.168.30.1              |
+| **Finance réseau** (R3)    | 192.168.30.1/24     | —                          |
+| **Lien R1 ↔ R2** (`r1_r2_net`) | R1: 192.168.12.2/29 <br> R2: 192.168.12.3/29 | — |
+| **Lien R2 ↔ R3** (`r2_r3_net`) | R2: 192.168.23.2/29 <br> R3: 192.168.23.3/29 | — |
+
+## Étapes
+
+### Étape 1 : Installer Docker
+
+```bash
+sudo apt update
+sudo apt install -y docker.io
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo usermod -aG docker $USER
+
+Étape 2 : Télécharger l’image Ubuntu 24.04
+docker pull ubuntu:24.04
+
+Étape 3 : Créer les conteneurs
+docker run -dit --name pc_employe --hostname pc_employe ubuntu:24.04
+docker run -dit --name pc_rh --hostname pc_rh ubuntu:24.04
+docker run -dit --name pc_finance --hostname pc_finance ubuntu:24.04
+
+docker run -dit --name r1 --hostname r1 --privileged ubuntu:24.04
+docker run -dit --name r2 --hostname r2 --privileged ubuntu:24.04
+docker run -dit --name r3 --hostname r3 --privileged ubuntu:24.04
+
+Étape 4 : Créer les réseaux avec /29
+docker network create --subnet=192.168.10.0/24 employes_net
+docker network create --subnet=192.168.20.0/24 rh_net
+docker network create --subnet=192.168.30.0/24 finance_net
+
+docker network create --subnet=192.168.12.0/29 r1_r2_net
+docker network create --subnet=192.168.23.0/29 r2_r3_net
+
+Étape 5 : Connecter les conteneurs avec IP statiques
+# PC
+docker network connect --ip 192.168.10.10 employes_net pc_employe
+docker network connect --ip 192.168.20.10 rh_net pc_rh
+docker network connect --ip 192.168.30.10 finance_net pc_finance
+
+# R1
+docker network connect --ip 192.168.10.1 employes_net r1
+docker network connect --ip 192.168.12.2 r1_r2_net r1
+
+# R2
+docker network connect --ip 192.168.12.3 r1_r2_net r2
+docker network connect --ip 192.168.20.1 rh_net r2
+docker network connect --ip 192.168.23.2 r2_r3_net r2
+
+# R3
+docker network connect --ip 192.168.23.3 r2_r3_net r3
+docker network connect --ip 192.168.30.1 finance_net r3
+
+Étape 6 : Installer les outils réseau dans les conteneurs
+# PC Employé
+docker exec -it pc_employe bash
+apt update && apt install -y net-tools iproute2 iputils-ping
+exit
+
+# PC RH
+docker exec -it pc_rh bash
+apt update && apt install -y net-tools iproute2 iputils-ping
+exit
+
+# PC Finance
+docker exec -it pc_finance bash
+apt update && apt install -y net-tools iproute2 iputils-ping
+exit
+
+# R1
+docker exec -it r1 bash
+apt update && apt install -y net-tools iproute2 iputils-ping
+exit
+
+# R2
+docker exec -it r2 bash
+apt update && apt install -y net-tools iproute2 iputils-ping
+exit
+
+# R3
+docker exec -it r3 bash
+apt update && apt install -y net-tools iproute2 iputils-ping
+exit
+
+Étape 7 : Activer le routage IP sur les routeurs
+docker exec -it r1 bash
+echo 1 > /proc/sys/net/ipv4/ip_forward
+exit
+
+docker exec -it r2 bash
+echo 1 > /proc/sys/net/ipv4/ip_forward
+exit
+
+docker exec -it r3 bash
+echo 1 > /proc/sys/net/ipv4/ip_forward
+exit
+
+Étape 8 : Configurer les routes manuellement avec ip route
+Pour chaque machine ou conteneur, on ajoute la route par défaut vers la gateway .1 de son sous-réseau, comme défini dans le plan.
+# PC Employé
+docker exec -it pc_employe bash
+ip route del default || true
+ip route add default via 192.168.10.1
+exit
+
+# PC RH
+docker exec -it pc_rh bash
+ip route del default || true
+ip route add default via 192.168.20.1
+exit
+
+# PC Finance
+docker exec -it pc_finance bash
+ip route del default || true
+ip route add default via 192.168.30.1
+exit
+
+# R1
+docker exec -it r1 bash
+# routes vers les autres sous-réseaux
+ip route add 192.168.20.0/24 via 192.168.12.3
+ip route add 192.168.30.0/24 via 192.168.12.3
+exit
+
+# R2
+docker exec -it r2 bash
+ip route add 192.168.10.0/24 via 192.168.12.2
+ip route add 192.168.30.0/24 via 192.168.23.3
+exit
+
+# R3
+docker exec -it r3 bash
+ip route add 192.168.10.0/24 via 192.168.23.2
+ip route add 192.168.20.0/24 via 192.168.23.2
+exit
+
+Étape 9 : Vérifications
+# Depuis PC Employé
+docker exec -it pc_employe bash
+ping 192.168.20.10   # vers PC RH
+ping 192.168.30.10   # vers PC Finance
+exit
+
+# Depuis PC RH
+docker exec -it pc_rh bash
+ping 192.168.10.10   # vers PC Employé
+ping 192.168.30.10   # vers PC Finance (optionnel si routage complet)
+exit
+
+# Depuis PC Finance
+docker exec -it pc_finance bash
+ping 192.168.10.10   # vers PC Employé
+ping 192.168.20.10   # vers PC RH
+exit
+
+
+Remarques
+
+Avec /29, tu as 8 adresses : 1 réseau, 1 broadcast, donc tu as 6 utilisables. Cela donne plus de marge pour erreurs ou réservations.
+
+En utilisant ip route add default via .. dans chaque conteneur, tu forces la gateway .1 comme route par défaut.
