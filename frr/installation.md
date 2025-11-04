@@ -189,20 +189,16 @@ exit
 vi /etc/frr/daemons
 ```
 Tape i for insert mode </br>
-Select as yes routing protocol like : </br>
+Select as yes routing protocol like : </br> </br>
 bgpd=yes </br>
 ospfd=yes </br>
-ospf6d=yes </br>
+ospf6d=yes </br> </br>
 Tape echap for avoiding insert mode </br>
 Tape :wq </br>
 Tape enter </br>
 
-```
-/usr/lib/frr/frrinit.sh start
-```
-```
-vtysh
-```
+
+
 ```
 systemctl status frr
 ```
