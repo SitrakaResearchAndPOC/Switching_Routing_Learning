@@ -227,9 +227,12 @@ router ?
 ```
 router ospf
 ```
+```
+exit
+```
 
 ```
-router bgp
+router bgp 100
 ```
 
 
