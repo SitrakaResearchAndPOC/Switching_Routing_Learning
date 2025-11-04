@@ -1,8 +1,8 @@
 # Container installation using ubuntu 20.04
 
 
-<details>
-Dockerfile
+<details Dockerfile>
+
     
 ```
 FROM ubuntu:20.04
