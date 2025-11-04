@@ -1,5 +1,18 @@
 # Container installation using ubuntu 20.04
 
+* Installation avec nano 
+```
+apt update && apt install nano
+```
+```
+mkdir frr_ubuntu
+```
+```
+cd frr_ubuntu
+```
+```
+nano Dockerfile
+```
 
 <details >
 <summary> Dockerfile </summary>
@@ -105,3 +118,8 @@
 
 
 </details>
+
+Tape ctrl+x
+
+
+
