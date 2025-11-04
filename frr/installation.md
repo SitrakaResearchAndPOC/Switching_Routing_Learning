@@ -1,6 +1,6 @@
 # Container installation using ubuntu 20.04
 
-* Installation avec nano 
+## Installation avec nano 
 ```
 apt update && apt install nano
 ```
@@ -13,6 +13,8 @@ cd frr_ubuntu
 ```
 nano Dockerfile
 ```
+## Dockefile
+
 copy Dockerfile 
 
 <details >
@@ -123,9 +125,21 @@ copy Dockerfile
 Paste Docker
 Tape ctrl+X and Y and enter
 
+## Building image FRR
+```
+docker build --no-cache -t frr_docker:h1 .
+```
+## 2-docker-start-frr-3-nodes
+```
+docker run --name H1 --cap-add-NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
+```
+```
+docker run --name H2 --cap-add-NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
+```
+```
+docker run --name H3 --cap-add-NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
 ```
 
-```
 
 
 
