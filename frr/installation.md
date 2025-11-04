@@ -164,14 +164,19 @@ show ip route
 configure terminal
 ```
 ```
-route
+router ?
 ```
 ```
 router ospf
 ```
+ospfd is not running
 ```
 router bgp
 ```
+ospfd is not running </br>
+bgpd is not running </br>
+
+
 ## Activating dynamic routing ospf
 ```
 vi /etc/frr/daemons
@@ -207,15 +212,15 @@ show ip route
 configure terminal
 ```
 ```
-route
+router ?
 ```
 ```
 router ospf
 ```
+
 ```
 router bgp
 ```
-
 
 
 
