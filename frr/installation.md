@@ -154,6 +154,10 @@ systemctl status frr
 vtysh
 ```
 ```
+show interface brief
+```
+
+```
 show ip route
 ```
 ```
@@ -192,6 +196,9 @@ systemctl status frr
 
 ```
 vtysh
+```
+```
+show interface brief
 ```
 ```
 show ip route
