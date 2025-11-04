@@ -248,20 +248,102 @@ docker run -it --rm --privileged --name frr-container frrouting/frr:latest /bin/
 vi /etc/frr/daemons
 ```
 Tape i for insert mode </br>
-Select as yes routing protocol like : </br>
+Select as yes routing protocol like : </br> </br>
 bgpd=yes </br>
 ospfd=yes </br>
-ospf6d=yes </br>
+ospf6d=yes </br> </br>
 Tape echap for avoiding insert mode </br>
 Tape :wq </br>
 Tape enter </br>
 
 ```
+/usr/lib/frr/frrinit.sh status
+```
+```
 /usr/lib/frr/frrinit.sh start
+```
+```
+/usr/lib/frr/frrinit.sh status
 ```
 ```
 vtysh
 ```
+```
+show interface brief
+```
+
+```
+show ip route
+```
+```
+configure terminal
+```
+```
+router ?
+```
+```
+router ospf
+```
+ospfd is not running
+```
+router bgp
+```
+ospfd is not running </br>
+bgpd is not running </br>
+
+```
+end
+```
+```
+exit
+```
+
+
+## Activating dynamic routing ospf
+```
+vi /etc/frr/daemons
+```
+Tape i for insert mode </br>
+Select as yes routing protocol like : </br> </br>
+bgpd=yes </br>
+ospfd=yes </br>
+ospf6d=yes </br> </br>
+Tape echap for avoiding insert mode </br>
+Tape :wq </br>
+Tape enter </br>
+
+```
+/usr/lib/frr/frrinit.sh status
+```
+```
+/usr/lib/frr/frrinit.sh start
+```
+```
+/usr/lib/frr/frrinit.sh status
+```
+```
+show interface brief
+```
+```
+show ip route
+```
+```
+configure terminal
+```
+```
+router ?
+```
+```
+router ospf
+```
+```
+exit
+```
+
+```
+router bgp 100
+```
+
 
 
 
