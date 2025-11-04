@@ -176,6 +176,13 @@ router bgp
 ospfd is not running </br>
 bgpd is not running </br>
 
+```
+end
+```
+```
+exit
+```
+
 
 ## Activating dynamic routing ospf
 ```
