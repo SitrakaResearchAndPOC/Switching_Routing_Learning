@@ -140,15 +140,34 @@ docker run --name H2 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker
 docker run --name H3 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
 ```
 ## Launching frr
+
 ```
 systemctl status frr
 ```
+frr.service - FRRouting  </br>
+    Loaded: loaded (/etc/systemd/system/frr.service, enabled) </br>
+    Active: inactive (dead) </br>
 ```
-systemctl restart frr
+systemctl start frr
 ```
+watchfrr[19]: [T83RR-8SM5G] watchfrr 10.1.4my-manual-build starting: vty@0 </br>
+watchfrr[19]: [ZCJ3S-SPH5S] zebra state -> down : initial connection attempt failed </br>
+watchfrr[19]: [ZCJ3S-SPH5S] mgmtd state -> down : initial connection attempt failed </br>
+watchfrr[19]: [ZCJ3S-SPH5S] staticd state -> down : initial connection attempt failed </br>
+watchfrr[19]: [YFT0P-5Q5YX] Forked background command [pid 20]: /usr/lib/frr/watchfrr.sh restart all </br>
+watchfrr[19]: [VTVCM-Y2NW3] Configuration Read in Took: 00:00:00 </br>
+watchfrr[19]: [QDG3Y-BY5TN] zebra state -> up : connect succeeded </br>
+watchfrr[19]: [QDG3Y-BY5TN] mgmtd state -> up : connect succeeded </br>
+watchfrr[19]: [QDG3Y-BY5TN] staticd state -> up : connect succeeded </br>
+watchfrr[19]: [KWE5Q-QNGFC] all daemons up, doing startup-complete notify </br>
+
+
 ```
 systemctl status frr
 ```
+frr.service - FRRouting  </br>
+    Loaded: loaded (/etc/systemd/system/frr.service, enabled)  </br>
+    Active: active (running)  </br>
 
 ```
 vtysh
@@ -171,7 +190,7 @@ router ospf
 ```
 ospfd is not running
 ```
-router bgp
+router bgp 100
 ```
 ospfd is not running </br>
 bgpd is not running </br>
@@ -199,15 +218,34 @@ Tape enter </br>
 
 
 
-```
-systemctl status frr
-```
+
 ```
 systemctl restart frr
 ```
+watchfrr[19]: [NG1AJ-FP2TQ] Terminating on signal </br>
+watchfrr[148]: [T83RR-8SM5G] watchfrr 10.1.4my-manual-build starting: vty@0 </br>
+watchfrr[148]: [ZCJ3S-SPH5S] zebra state -> down : initial connection attempt failed </br>
+watchfrr[148]: [ZCJ3S-SPH5S] mgmtd state -> down : initial connection attempt failed </br>
+watchfrr[148]: [ZCJ3S-SPH5S] bgpd state -> down : initial connection attempt failed </br>
+watchfrr[148]: [ZCJ3S-SPH5S] ospfd state -> down : initial connection attempt failed </br>
+watchfrr[148]: [ZCJ3S-SPH5S] ospf6d state -> down : initial connection attempt failed </br>
+watchfrr[148]: [ZCJ3S-SPH5S] staticd state -> down : initial connection attempt failed </br>
+watchfrr[148]: [YFT0P-5Q5YX] Forked background command [pid 149]: /usr/lib/frr/watchfrr.sh restart all </br>
+watchfrr[148]: [VTVCM-Y2NW3] Configuration Read in Took: 00:00:00 </br>
+watchfrr[148]: [QDG3Y-BY5TN] zebra state -> up : connect succeeded </br>
+watchfrr[148]: [QDG3Y-BY5TN] mgmtd state -> up : connect succeeded </br>
+watchfrr[148]: [QDG3Y-BY5TN] bgpd state -> up : connect succeeded </br>
+watchfrr[148]: [QDG3Y-BY5TN] ospfd state -> up : connect succeeded </br>
+watchfrr[148]: [QDG3Y-BY5TN] ospf6d state -> up : connect succeeded </br>
+watchfrr[148]: [QDG3Y-BY5TN] staticd state -> up : connect succeeded </br>
+watchfrr[148]: [KWE5Q-QNGFC] all daemons up, doing startup-complete notify </br>
+
 ```
 systemctl status frr
 ```
+frr.service - FRRouting </br>
+    Loaded: loaded (/etc/systemd/system/frr.service, enabled) </br>
+    Active: active (running) </br>
 
 ```
 vtysh
@@ -245,26 +283,31 @@ docker pull frrouting/frr:latest
 docker run -it --rm --privileged --name frr-container frrouting/frr:latest /bin/bash
 ```
 ```
-vi /etc/frr/daemons
+/usr/lib/frr/frrinit.sh status
 ```
-Tape i for insert mode </br>
-Select as yes routing protocol like : </br> </br>
-bgpd=yes </br>
-ospfd=yes </br>
-ospf6d=yes </br> </br>
-Tape echap for avoiding insert mode </br>
-Tape :wq </br>
-Tape enter </br>
+Status of watchfrr: FAILED </br>
+Status of zebra: FAILED  </br>
+Status of staticd: FAILED  </br>
+```
+/usr/lib/frr/frrinit.sh start
+```
+Starting watchfrr with command: '  /usr/lib/frr/watchfrr  -d  -F traditional   zebra staticd' </br>
+watchfrr[19]: [T83RR-8SM5G] watchfrr 8.4_git starting: vty@0 </br>
+watchfrr[19]: [ZCJ3S-SPH5S] zebra state -> down : initial connection attempt failed </br>
+watchfrr[19]: [ZCJ3S-SPH5S] staticd state -> down : initial connection attempt failed </br>
+watchfrr[19]: [YFT0P-5Q5YX] Forked background command [pid 20]: /usr/lib/frr/watchfrr.sh restart all </br>
+watchfrr[19]: [QDG3Y-BY5TN] zebra state -> up : connect succeeded </br>
+watchfrr[19]: [QDG3Y-BY5TN] staticd state -> up : connect succeeded </br>
+watchfrr[19]: [KWE5Q-QNGFC] all daemons up, doing startup-complete notify </br>
+Started watchfrr
 
 ```
 /usr/lib/frr/frrinit.sh status
 ```
-```
-/usr/lib/frr/frrinit.sh start
-```
-```
-/usr/lib/frr/frrinit.sh status
-```
+Status of watchfrr: running </br>
+Status of zebra: running </br>
+Status of staticd: running </br>
+
 ```
 vtysh
 ```
@@ -286,7 +329,7 @@ router ospf
 ```
 ospfd is not running
 ```
-router bgp
+router bgp 100
 ```
 ospfd is not running </br>
 bgpd is not running </br>
@@ -313,14 +356,37 @@ Tape :wq </br>
 Tape enter </br>
 
 ```
+/usr/lib/frr/frrinit.sh restart
+```
+watchfrr[38]: [T83RR-8SM5G] watchfrr 8.4_git starting: vty@0 </br>
+watchfrr[38]: [ZCJ3S-SPH5S] zebra state -> down : initial connection attempt failed </br>
+watchfrr[38]: [ZCJ3S-SPH5S] bgpd state -> down : initial connection attempt failed </br>
+watchfrr[38]: [ZCJ3S-SPH5S] ospfd state -> down : initial connection attempt failed </br>
+watchfrr[38]: [ZCJ3S-SPH5S] ospf6d state -> down : initial connection attempt failed </br>
+watchfrr[38]: [ZCJ3S-SPH5S] staticd state -> down : initial connection attempt failed </br>
+watchfrr[38]: [YFT0P-5Q5YX] Forked background command [pid 39]: /usr/lib/frr/watchfrr.sh restart all </br>
+watchfrr[38]: [QDG3Y-BY5TN] bgpd state -> up : connect succeeded </br>
+watchfrr[38]: [QDG3Y-BY5TN] ospfd state -> up : connect succeeded </br>
+watchfrr[38]: [QDG3Y-BY5TN] ospf6d state -> up : connect succeeded </br>
+watchfrr[38]: [QDG3Y-BY5TN] staticd state -> up : connect succeeded </br>
+watchfrr[38]: [KWE5Q-QNGFC] all daemons up, doing startup-complete notify </br>
+Started watchfrr </br>
+
+```
 /usr/lib/frr/frrinit.sh status
 ```
+Status of watchfrr: running </br>
+Status of zebra: running </br>
+Status of bgpd: running </br>
+Status of ospfd: running </br>
+Status of ospf6d: running </br>
+Status of staticd: running </br>
+
+
 ```
-/usr/lib/frr/frrinit.sh start
+vtysh
 ```
-```
-/usr/lib/frr/frrinit.sh status
-```
+
 ```
 show interface brief
 ```
@@ -339,7 +405,6 @@ router ospf
 ```
 exit
 ```
-
 ```
 router bgp 100
 ```
