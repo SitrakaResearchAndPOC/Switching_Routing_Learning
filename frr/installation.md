@@ -4,8 +4,6 @@
 <details >
 <summary> Dockerfile </summary>
 
-
-        ```
         FROM ubuntu:20.04
         
         LABEL maintainer="avinousacademy@gmail.com"
@@ -104,8 +102,6 @@
         
         # 10. Retour à l’utilisateur frr pour l’exécution
         # Add cmd vtysh if you want directly vty routing
-        
-        ```
-      
+
 
 </details>
