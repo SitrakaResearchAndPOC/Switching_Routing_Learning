@@ -1,6 +1,8 @@
 # Container installation using ubuntu 20.04
 
 Dockerfile
+
+<details>
 ```
 FROM ubuntu:20.04
 
@@ -102,4 +104,4 @@ EXPOSE 179 2601 2602 2603 2604 2605 2606
 # Add cmd vtysh if you want directly vty routing
 
 ```
-
+</details>
