@@ -139,6 +139,78 @@ docker run --name H2 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker
 ```
 docker run --name H3 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
 ```
+## Launching frr
+```
+systemctl status frr
+```
+```
+systemctl restart frr
+```
+```
+systemctl status frr
+```
+
+```
+vtysh
+```
+```
+show ip route
+```
+```
+configure terminal
+```
+```
+route
+```
+```
+router ospf
+```
+```
+router bgp
+```
+## Activating dynamic routing ospf
+```
+vi /etc/frr/daemons
+```
+Tape i </br>
+Select as yes routing protocol </br>
+```
+/usr/lib/frr/frrinit.sh start
+```
+```
+vtysh
+```
+```
+systemctl status frr
+```
+```
+systemctl restart frr
+```
+```
+systemctl status frr
+```
+
+```
+vtysh
+```
+```
+show ip route
+```
+```
+configure terminal
+```
+```
+route
+```
+```
+router ospf
+```
+```
+router bgp
+```
+
+
+
 
 # Container Direct
 ```
