@@ -188,8 +188,15 @@ exit
 ```
 vi /etc/frr/daemons
 ```
-Tape i </br>
-Select as yes routing protocol </br>
+Tape i for insert mode </br>
+Select as yes routing protocol like : </br>
+bgpd=yes </br>
+ospfd=yes </br>
+ospf6d=yes </br>
+Tape echap for avoiding insert mode </br>
+Tape :wq </br>
+Tape enter </br>
+
 ```
 /usr/lib/frr/frrinit.sh start
 ```
@@ -241,8 +248,15 @@ docker run -it --rm --privileged --name frr-container frrouting/frr:latest /bin/
 ```
 vi /etc/frr/daemons
 ```
-Tape i </br>
-Select as yes routing protocol </br>
+Tape i for insert mode </br>
+Select as yes routing protocol like : </br>
+bgpd=yes </br>
+ospfd=yes </br>
+ospf6d=yes </br>
+Tape echap for avoiding insert mode </br>
+Tape :wq </br>
+Tape enter </br>
+
 ```
 /usr/lib/frr/frrinit.sh start
 ```
