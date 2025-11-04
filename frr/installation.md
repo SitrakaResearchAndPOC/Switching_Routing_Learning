@@ -131,16 +131,33 @@ docker build --no-cache -t frr_docker:h1 .
 ```
 ## 2-docker-start-frr-3-nodes
 ```
-docker run --name H1 --cap-add-NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
+docker run --name H1 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
 ```
 ```
-docker run --name H2 --cap-add-NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
+docker run --name H2 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
 ```
 ```
-docker run --name H3 --cap-add-NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
+docker run --name H3 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
 ```
 
-
+# Container Direct
+```
+docker pull frrouting/frr:latest
+```
+```
+docker run -it --rm --privileged --name frr-container frrouting/frr:latest /bin/bash
+```
+```
+vi /etc/frr/daemons
+```
+Tape i </br>
+Select as yes routing protocol </br>
+```
+/usr/lib/frr/frrinit.sh start
+```
+```
+vtysh
+```
 
 
 
