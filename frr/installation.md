@@ -13,6 +13,7 @@ cd frr_ubuntu
 ```
 nano Dockerfile
 ```
+copy Dockerfile 
 
 <details >
 <summary> Dockerfile </summary>
@@ -119,7 +120,14 @@ nano Dockerfile
 
 </details>
 
-Tape ctrl+x
+Paste Docker
+Tape ctrl+X and Y and enter
+
+```
+
+```
+
+
 
 
 
