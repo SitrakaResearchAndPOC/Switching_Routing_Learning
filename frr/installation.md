@@ -4,8 +4,7 @@
 <details >
 <summary> Dockerfile </summary>
 
-<pre>
-            
+
         ```
         FROM ubuntu:20.04
         
@@ -108,6 +107,5 @@
         
         ```
       
-</pre>
 
 </details>
