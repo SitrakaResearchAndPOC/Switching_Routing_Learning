@@ -60,9 +60,9 @@ brctl show
 
 
 ` 
-docker network disconnect docker0  H1
-docker network disconnect docker0  H2
-docker network disconnect docker0  H3 
+docker network disconnect docker0  H1  </br>
+docker network disconnect docker0  H2  </br>
+docker network disconnect docker0  H3  </br> 
 ` 
 
 </br> In terminal for managing docker and router
@@ -81,10 +81,25 @@ docker network disconnect docker0 H3
 ```
 docker network ls
 ```
----
-NETWORK ID     NAME                     DRIVER    SCOPE  
-374ae59c2112   bridge                   bridge    local  
----
+    <table>
+      <caption>Réseaux Docker</caption>
+      <thead>
+        <tr>
+          <th class="col-id">NETWORK ID</th>
+          <th class="col-name">NAME</th>
+          <th class="col-driver">DRIVER</th>
+          <th class="col-scope">SCOPE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-id">374ae59c2112</td>
+          <td class="col-name">bridge</td>
+          <td class="col-driver">bridge</td>
+          <td class="col-scope">local</td>
+        </tr>
+      </tbody>
+    </table>
 
 </br>
 
