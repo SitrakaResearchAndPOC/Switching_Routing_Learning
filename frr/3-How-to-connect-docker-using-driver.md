@@ -6,9 +6,12 @@ docker images
 
 
 ## more 02-docker-start-frr-3-nodes
-docker run --name H1 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash </br>
-docker run --name H2 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash </br>
-docker run --name H3 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash </br>
+
+<pre>
+docker run --name H1 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash 
+docker run --name H2 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash 
+docker run --name H3 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash 
+</pre>
 
 Terminal 1 for H1
 
@@ -59,10 +62,11 @@ brctl show
 ## more 04-docker-network-remove-default
 
 
-
-docker network disconnect docker0  H1  </br>
-docker network disconnect docker0  H2  </br>
-docker network disconnect docker0  H3  </br> 
+<pre>
+docker network disconnect docker0  H1  
+docker network disconnect docker0  H2  
+docker network disconnect docker0  H3  
+</pre>        
 
 
 </br> In terminal for managing docker and router
@@ -112,8 +116,11 @@ we should NOT find all ip addres on the ifconfig of each terminal of H1, H2, H3
 # CREATING AND ASSOCIATING FRR_SUBNET1 AND FRR_SUBNET2
 
 ## more 03-docker-network-create-3-nodes
-docker network create --driver=bridge --subnet=11.11.0.0/16 frr_subnet1 </br>
-docker network create --driver=bridge --subnet=12.12.0.0/16 frr_subnet2 </br>
+
+<pre>
+docker network create --driver=bridge --subnet=11.11.0.0/16 frr_subnet1
+docker network create --driver=bridge --subnet=12.12.0.0/16 frr_subnet2
+</pre>  
 </br>
 
 ```
@@ -140,10 +147,12 @@ We should find two bridge
 
 ## more 05-docker-network-connect-3-nodes
 
-docker network connect frr_subnet1 H1 </br>
-docker network connect frr_subnet1 H2 </br> 
-docker network connect frr_subnet2 H2 </br>
-docker network connect frr_subnet2 H3 </br>
+<pre>
+docker network connect frr_subnet1 H1 
+docker network connect frr_subnet1 H2  
+docker network connect frr_subnet2 H2 
+docker network connect frr_subnet2 H3 
+</pre>
 
 ```
 docker network connect frr_subnet1 H1 
@@ -195,9 +204,12 @@ In terminal of H3
 ifconfig
 ```
 
-eth0: flags=4163  ...  mtu 1500  </br>
-        inet 12.12.0.3  netmask 255.255.0.0  broadcast 12.12.255.255  </br>
-        ether 9a:39:c4:4f:54:9f  txqueuelen 0  (Ethernet)  </br>
+<pre> 
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 12.12.0.3  netmask 255.255.0.0  broadcast 12.12.255.255
+        ether 9a:39:c4:4f:54:9f  txqueuelen 0  (Ethernet)
+</pre>
+
 </br>
 
 
