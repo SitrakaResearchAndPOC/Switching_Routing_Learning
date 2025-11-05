@@ -167,9 +167,9 @@ In terminal of H1
 ifconfig
 ```
 <pre>
-eth0: flags=4163 ... mtu 1500
-        inet 11.11.0.2  netmask 255.255.0.0  broadcast 11.11.255.255
-        ether 4e:e8:87:10:8f:d6  txqueuelen 0  (Ethernet)
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.17.0.2  netmask 255.255.0.0  broadcast 172.17.255.255
+        ether ce:5a:95:7b:a2:fc  txqueuelen 0  (Ethernet)
 </pre>
 
 In terminal of H2
