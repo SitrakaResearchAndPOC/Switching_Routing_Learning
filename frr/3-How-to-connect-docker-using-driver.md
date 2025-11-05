@@ -82,24 +82,10 @@ docker network disconnect docker0 H3
 docker network ls
 ```
 
-<table>
-      <thead>
-        <tr>
-          <th class="col-id">NETWORK ID</th>
-          <th class="col-name">NAME</th>
-          <th class="col-driver">DRIVER</th>
-          <th class="col-scope">SCOPE</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="col-id">374ae59c2112</td>
-          <td class="col-name">bridge</td>
-          <td class="col-driver">bridge</td>
-          <td class="col-scope">local</td>
-        </tr>
-      </tbody>
-</table>
+<pre>
+NETWORK ID     NAME                     DRIVER    SCOPE
+374ae59c2112   bridge                   bridge    local
+</pre>
 
 </br>
 
@@ -139,39 +125,11 @@ docker network create --driver=bridge --subnet=12.12.0.0/16 frr_subnet2
 ```
 docker network ls
 ```
-
-<table>
-    <caption>Réseaux Docker</caption>
-    <thead>
-      <tr>
-        <th>NETWORK ID</th>
-        <th>NAME</th>
-        <th>DRIVER</th>
-        <th>SCOPE</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>374ae59c2112</td>
-        <td>bridge</td>
-        <td>bridge</td>
-        <td>local</td>
-      </tr>
-      <tr>
-        <td>011ee426d0b4</td>
-        <td>frr_subnet1</td>
-        <td>bridge</td>
-        <td>local</td>
-      </tr>
-      <tr>
-        <td>47d8249129a8</td>
-        <td>frr_subnet2</td>
-        <td>bridge</td>
-        <td>local</td>
-      </tr>
-    </tbody>
-</table>
-
+<pre>
+NETWORK ID     NAME                     DRIVER    SCOPE
+011ee426d0b4   frr_subnet1              bridge    local
+47d8249129a8   frr_subnet2              bridge    local
+</pre>
 </br>
 
 ```
@@ -220,14 +178,16 @@ In terminal of H2
 ifconfig
 ```
 
-eth0: flags=4163  ... mtu 1500  </br>
-        inet 11.11.0.3  netmask 255.255.0.0  broadcast 11.11.255.255 </br>
-        ether 96:57:63:e0:ea:71  txqueuelen 0  (Ethernet) </br>
-        ...   </br>
-eth1: flags=4163  ...  mtu 1500  </br>
-        inet 12.12.0.2  netmask 255.255.0.0  broadcast 12.12.255.255  </br>
-        ether 3a:11:25:0d:bc:d5  txqueuelen 0  (Ethernet)  </br>
-</br>
+<pre>
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 11.11.0.3  netmask 255.255.0.0  broadcast 11.11.255.255
+        ether 96:57:63:e0:ea:71  txqueuelen 0  (Ethernet)
+        ...  
+eth1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 12.12.0.2  netmask 255.255.0.0  broadcast 12.12.255.255
+        ether 3a:11:25:0d:bc:d5  txqueuelen 0  (Ethernet)
+</pre>
+
 
 In terminal of H3
 
