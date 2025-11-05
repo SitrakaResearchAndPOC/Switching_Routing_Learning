@@ -59,11 +59,11 @@ brctl show
 ## more 04-docker-network-remove-default
 
 
-` 
+
 docker network disconnect docker0  H1  </br>
 docker network disconnect docker0  H2  </br>
 docker network disconnect docker0  H3  </br> 
-` 
+
 
 </br> In terminal for managing docker and router
 
@@ -139,10 +139,39 @@ docker network create --driver=bridge --subnet=12.12.0.0/16 frr_subnet2
 ```
 docker network ls
 ```
-NETWORK ID     NAME                     DRIVER    SCOPE  </br>
-374ae59c2112   bridge                   bridge    local  </br>
-011ee426d0b4   frr_subnet1              bridge    local  </br>
-47d8249129a8   frr_subnet2              bridge    local  </br>
+
+<table>
+    <caption>Réseaux Docker</caption>
+    <thead>
+      <tr>
+        <th>NETWORK ID</th>
+        <th>NAME</th>
+        <th>DRIVER</th>
+        <th>SCOPE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>374ae59c2112</td>
+        <td>bridge</td>
+        <td>bridge</td>
+        <td>local</td>
+      </tr>
+      <tr>
+        <td>011ee426d0b4</td>
+        <td>frr_subnet1</td>
+        <td>bridge</td>
+        <td>local</td>
+      </tr>
+      <tr>
+        <td>47d8249129a8</td>
+        <td>frr_subnet2</td>
+        <td>bridge</td>
+        <td>local</td>
+      </tr>
+    </tbody>
+</table>
+
 </br>
 ```
 brctl show
