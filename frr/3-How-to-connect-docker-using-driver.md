@@ -48,7 +48,7 @@ docker ps
 ```
 ifconfig
 ```
-## BRIDGE
+# PREPARING BRIDGE
 ```
 apt install bridge-utils
 ```
@@ -72,5 +72,39 @@ docker network disconnect docker0 H2
 ```
 docker network disconnect docker0 H3
 ```
+
+## inspecting bridge
+```
+docker network ls
+```
+NETWORK ID     NAME                     DRIVER    SCOPE  </br>
+374ae59c2112   bridge                   bridge    local  </br>
+</br>
+
+```
+docker network inspect bridge
+```
+we should find all ip addres on the ifconfig of each terminal of H1, H2, H3
+## Disconnecting H1, H2, H3 on bridge
+```
+docker network disconnect bridge H1
+```
+```
+docker network disconnect bridge H2
+```
+```
+docker network disconnect bridge H3
+```
+```
+docker network inspect bridge
+```
+we should NOT find all ip addres on the ifconfig of each terminal of H1, H2, H3
+
+
+
+
+
+
+
 
 
