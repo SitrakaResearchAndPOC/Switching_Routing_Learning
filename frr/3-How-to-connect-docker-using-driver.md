@@ -59,9 +59,9 @@ brctl show
 ## more 04-docker-network-remove-default
 
 ---
-docker network disconnect docker0  <H1 from docker ps> 
-docker network disconnect docker0  <H2 from docker ps>
-docker network disconnect docker0  <H3 from docker ps> 
+docker network disconnect docker0  H1
+docker network disconnect docker0  H2
+docker network disconnect docker0  H3 
 ---
 
 </br> In terminal for managing docker and router
