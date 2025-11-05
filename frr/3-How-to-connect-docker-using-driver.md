@@ -101,6 +101,33 @@ docker network inspect bridge
 we should NOT find all ip addres on the ifconfig of each terminal of H1, H2, H3
 
 
+# CREATING AND ASSOCIATING FRR_SUBNET1 AND FRR_SUBNET2
+
+## more 03-docker-network-create-3-nodes
+docker network create --driver=bridge --subnet=11.11.0.0/16 frr_subnet1 </br>
+docker network create --driver=bridge --subnet=12.12.0.0/16 frr_subnet2 </br>
+</br>
+
+```
+docker network create --driver=bridge --subnet=11.11.0.0/16 frr_subnet1 
+```
+```
+docker network create --driver=bridge --subnet=12.12.0.0/16 frr_subnet2 
+```
+```
+docker network ls
+```
+NETWORK ID     NAME                     DRIVER    SCOPE  </br>
+374ae59c2112   bridge                   bridge    local  </br>
+011ee426d0b4   frr_subnet1              bridge    local  </br>
+47d8249129a8   frr_subnet2              bridge    local  </br>
+</br>
+```
+brctl show
+```
+We should find two bridge
+
+
 
 
 
