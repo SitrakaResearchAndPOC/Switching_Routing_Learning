@@ -81,8 +81,8 @@ docker network disconnect docker0 H3
 ```
 docker network ls
 ```
-    <table>
-      <caption>Réseaux Docker</caption>
+
+<table>
       <thead>
         <tr>
           <th class="col-id">NETWORK ID</th>
@@ -99,7 +99,7 @@ docker network ls
           <td class="col-scope">local</td>
         </tr>
       </tbody>
-    </table>
+</table>
 
 </br>
 
