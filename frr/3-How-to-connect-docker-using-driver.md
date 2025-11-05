@@ -173,16 +173,67 @@ docker network ls
 </table>
 
 </br>
+
 ```
 brctl show
 ```
+
 We should find two bridge
 
+## more 05-docker-network-connect-3-nodes
 
+docker network connect frr_subnet1 H1 </br>
+docker network connect frr_subnet1 H2 </br> 
+docker network connect frr_subnet2 H2 </br>
+docker network connect frr_subnet2 H3 </br>
 
+```
+docker network connect frr_subnet1 H1 
+```
 
+```
+docker network connect frr_subnet1 H2 
+```
 
+```
+docker network connect frr_subnet2 H2
+```
 
+```
+docker network connect frr_subnet2 H3
+```
+
+## Showing interfaces
+In terminal of H1
+```
+ifconfig
+```
+eth0: flags=4163 ...  mtu 1500  </br>
+        inet 11.11.0.2  netmask 255.255.0.0  broadcast 11.11.255.255 </br>
+        ether 4e:e8:87:10:8f:d6  txqueuelen 0  (Ethernet) </br>
+</br>
+
+In terminal of H2
+```
+ifconfig
+```
+eth0: flags=4163  ... mtu 1500  </br>
+        inet 11.11.0.3  netmask 255.255.0.0  broadcast 11.11.255.255 </br>
+        ether 96:57:63:e0:ea:71  txqueuelen 0  (Ethernet) </br>
+        ...   </br>
+eth1: flags=4163  ...  mtu 1500  </br>
+        inet 12.12.0.2  netmask 255.255.0.0  broadcast 12.12.255.255  </br>
+        ether 3a:11:25:0d:bc:d5  txqueuelen 0  (Ethernet)  </br>
+</br>
+
+In terminal of H3
+```
+ifconfig
+```
+eth0: flags=4163  ...  mtu 1500  </br>
+        inet 12.12.0.3  netmask 255.255.0.0  broadcast 12.12.255.255  </br>
+        ether 9a:39:c4:4f:54:9f  txqueuelen 0  (Ethernet)  </br>
+</br>
 
 
 
