@@ -211,6 +211,32 @@ eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 </pre>
 
 </br>
+```
+docker network ls
+```
+<pre>
+NETWORK ID     NAME                     DRIVER    SCOPE
+011ee426d0b4   frr_subnet1              bridge    local
+47d8249129a8   frr_subnet2              bridge    local
+</pre>
 
+# TESTING ALL
+In terminal of managing docker and router
 
+```
+docker network inspect frr_subnet1
+```
+```
+docker network inspect frr_subnet2
+```
+```
+docker inspect H1
+```
+```
+docker inspect H2
+```
+```
+docker inspect H3
+```
+Test to ping H1 to H2 and H2 to H1
 
