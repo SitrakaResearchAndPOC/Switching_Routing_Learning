@@ -58,9 +58,11 @@ brctl show
 
 ## more 04-docker-network-remove-default
 
-docker network disconnect docker0  <H1 from docker ps> </br> 
-docker network disconnect docker0  <H2 from docker ps> </br>
-docker network disconnect docker0  <H3 from docker ps> </br>
+---
+docker network disconnect docker0  <H1 from docker ps> 
+docker network disconnect docker0  <H2 from docker ps>
+docker network disconnect docker0  <H3 from docker ps> 
+---
 
 </br> In terminal for managing docker and router
 
@@ -78,8 +80,11 @@ docker network disconnect docker0 H3
 ```
 docker network ls
 ```
-NETWORK ID     NAME                     DRIVER    SCOPE  </br>
-374ae59c2112   bridge                   bridge    local  </br>
+---
+NETWORK ID     NAME                     DRIVER    SCOPE  
+374ae59c2112   bridge                   bridge    local  
+---
+
 </br>
 
 ```
