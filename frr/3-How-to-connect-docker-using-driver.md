@@ -1,7 +1,11 @@
+# CREATING H1, H2 and H3
+
 ```
 docker images
 ```
-# more 02-docker-start-frr-3-nodes
+
+
+## more 02-docker-start-frr-3-nodes
 
 Terminal 1 for H1
 
@@ -22,3 +26,8 @@ docker run --name H3 --hostname H3 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm 
 ```
 New terminal : ctrl+shift+T </br>
 Terminal for managing docker and router
+
+## Testing if H1, H2, H3 are created
+```
+docker ps
+```
