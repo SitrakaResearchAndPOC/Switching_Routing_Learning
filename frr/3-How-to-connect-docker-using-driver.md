@@ -209,14 +209,16 @@ In terminal of H1
 ifconfig
 ```
 eth0: flags=4163 ...  mtu 1500  </br>
-        inet 11.11.0.2  netmask 255.255.0.0  broadcast 11.11.255.255 </br>
-        ether 4e:e8:87:10:8f:d6  txqueuelen 0  (Ethernet) </br>
+<p>        inet 11.11.0.2  netmask 255.255.0.0  broadcast 11.11.255.255  </p> </br>
+<p>        ether 4e:e8:87:10:8f:d6  txqueuelen 0  (Ethernet) </p> </br>
 </br>
 
 In terminal of H2
+
 ```
 ifconfig
 ```
+
 eth0: flags=4163  ... mtu 1500  </br>
         inet 11.11.0.3  netmask 255.255.0.0  broadcast 11.11.255.255 </br>
         ether 96:57:63:e0:ea:71  txqueuelen 0  (Ethernet) </br>
