@@ -211,9 +211,11 @@ eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 </pre>
 
 </br>
+
 ```
 docker network ls
 ```
+
 <pre>
 NETWORK ID     NAME                     DRIVER    SCOPE
 011ee426d0b4   frr_subnet1              bridge    local
