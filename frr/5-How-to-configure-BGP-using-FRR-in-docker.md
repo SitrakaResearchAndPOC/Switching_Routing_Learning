@@ -2,8 +2,7 @@
 [ospf](https://github.com/SitrakaResearchAndPOC/Switching_Routing_Learning/blob/main/frr/4-How-to-configure-OSPF-using-FRR-in-docker.md) </br>
 
 ## Active BGP
-Active OSPF in  all Terminal
-
+Active OSPF in  all Terminal (for H1, H2 and H3)
 ```
  vi /etc/frr/daemons
 ```
