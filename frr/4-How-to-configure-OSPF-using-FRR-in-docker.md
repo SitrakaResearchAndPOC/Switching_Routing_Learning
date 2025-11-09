@@ -1,3 +1,22 @@
+## Deleting old configuration
+```
+docker rm -f H1
+```
+```
+docker rm -f H2
+```
+```
+docker rm -f H3
+```
+
+```
+docker network rm -f frr_subnet1 
+```
+```
+docker network rm -f frr_subnet2 
+```
+
+
 ## Running all image
 ```
 docker run --name H1 --hostname H1 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash 
