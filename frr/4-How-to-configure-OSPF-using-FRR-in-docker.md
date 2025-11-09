@@ -267,7 +267,7 @@ configure terminal
 router ospf
 ```
 ```
-network 12.12.0.2/16 area 0
+network 12.12.0.3/16 area 0
 ```
 ```
 network 3.3.3.3/32 area 0
