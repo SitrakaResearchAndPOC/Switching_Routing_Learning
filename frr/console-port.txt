@@ -1,0 +1,149 @@
+ cpupower frequency-set -u 2500mhz 
+ 
+ 
+ Étape 1 — Activer la console série Linux
+
+1️⃣ Édite le fichier grub :
+
+sudo nano /etc/default/grub
+
+Trouve la ligne :
+
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
+
+Et ajoute le support console série :
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash console=ttyS1,115200n8"
+
+
+Cela dit au noyau Linux : “affiche les logs + terminal sur le port COM1 à 115200 bauds”.
+
+
+Étape 2 — (Optionnel) Rendre la console interactive (login)
+Pour que tu puisses te connecter depuis PuTTY, il faut activer un getty (terminal login) sur le port série.
+
+Commande :
+sudo systemctl enable serial-getty@ttyS1.service
+
+sudo systemctl enable --now serial-getty@ttyS1.service
+
+sudo systemctl start serial-getty@ttyS1.service
+
+Vérifie :
+
+sudo systemctl status serial-getty@ttyS1.service
+
+
+Étape 3 — Mettre à jour GRUB et redémarrer
+sudo update-grub
+sudo reboot
+
+
+
+Étape 4 — Côté autre machine (client)
+
+Sur ton autre PC, ouvre PuTTY :
+
+Type de connexion : Serial
+
+Port : COMx (selon ton adaptateur, ex. COM3)
+
+Speed (baud) : 115200
+
+Data bits : 8
+
+Stop bits : 1
+
+Parity : None
+
+Flow control : None
+
+Puis clique sur Open 🔌
+
+Tu devrais voir au démarrage :
+
+
+
+Étape 5 (optionnel) — Tester manuellement sans service systemd
+
+Tu peux aussi tester sans systemctl :
+
+sudo agetty -L 115200 ttyS1 vt102
+
+Cela crée immédiatement une console série temporaire sur le port /dev/ttyS1.
+
+-----
+Rediriger un shell vers le port série avec socat
+socat permet de créer une console complète sur le port série :
+
+sudo apt install socat
+sudo socat -,raw,echo=0 FILE:/dev/ttyS1,raw,echo=0,b115200
+
+    Cela lance un shell interactif connecté à /dev/ttyS1.
+
+    L’autre machine voit exactement ce que tu tapes.
+
+💡 Avantage : très flexible, peut créer un serveur multi-utilisateur série ou un tunnel.
+
+
+
+
+TTY sur TCP avec ser2net
+Transforme ton port COM en console réseau accessible via TCP :
+
+sudo apt install ser2net
+sudo nano /etc/ser2net.conf
+
+
+Exemple pour /dev/ttyS1 à 115200 :
+115200:raw:0:/dev/ttyS1:115200 8DATABITS NONE 1STOPBIT
+
+Redémarre le service :
+sudo systemctl restart ser2net
+
+L’autre machine se connecte via PuTTY TCP :
+Host: IP_du_miniPC
+Port: 115200
+
+
+Avec VyOS: 
+1️⃣ Vérifier les périphériques série détectés par le kernel
+show system hardware
+
+ou, depuis le shell Linux de VyOS :
+dmesg | grep tty
+
+Exemple de sortie :
+[    0.000000] 00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+[    0.000000] 00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
+
+
+
+voir le port configuré comme console
+Dans VyOS :
+show system console
+Device: ttyS0
+Speed: 115200
+
+
+Pour changer le port console
+Si tu veux utiliser ttyS1 par exemple :
+
+configure
+set system console device ttyS1
+set system console speed 115200
+commit
+save
+exit
+
+
+Redémarre VyOS si nécessaire pour que la console série prenne effet.
+
+
+
+
+
+
+
+
+
+
