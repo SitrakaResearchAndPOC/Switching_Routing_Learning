@@ -41,7 +41,7 @@ H1 apprend des routes Internet (ex : 8.8.8.0/24).
 H1 annonce ces routes à H3 via iBGP.
 H3 pourra alors router le trafic Internet via H1.
 Sans iBGP → H3 ne connaîtrait pas ces routes externes.
-<pre>
+</pre>
 
 ## Configure BGP
 
