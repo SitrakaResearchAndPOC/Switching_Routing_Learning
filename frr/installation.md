@@ -131,13 +131,13 @@ docker build --no-cache -t frr_docker:h1 .
 ```
 ## 2-docker-start-frr-3-nodes
 ```
-docker run --name H1 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
+docker run --privileged --name H1 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
 ```
 ```
-docker run --name H2 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
+docker run --privileged --name H2 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
 ```
 ```
-docker run --name H3 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
+docker run --privileged --name H3 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
 ```
 ## Launching frr
 
@@ -280,7 +280,7 @@ router bgp 100
 docker pull frrouting/frr:latest
 ```
 ```
-docker run -it --rm --privileged --name frr-container frrouting/frr:latest /bin/bash
+docker run --privileged -it --rm --privileged --name frr-container frrouting/frr:latest /bin/bash
 ```
 ```
 /usr/lib/frr/frrinit.sh status
