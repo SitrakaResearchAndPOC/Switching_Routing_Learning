@@ -1,109 +1,160 @@
-Re-run container in privileged mode
-docker run --privileged --name  H1 --hostname H2 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash 
-docker run --privileged --name  H2 --hostname H2 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash 
-docker run --privileged --name  H3 --hostname H2 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash 
+lsmod | grep mpls
+uname -r
+modinfo mpls_router
+modinfo mpls_iptunnel
 
+sudo apt update
+sudo apt install linux-modules-extra-$(uname -r)
+sudo apt install iproute2
 
-
-
-Vérifier si le noyau supporte MPLS
-
-Commence par vérifier si ton noyau a la prise en charge MPLS :
-
-
-grep MPLS /boot/config-$(uname -r)
-
-Tu devrais voir des lignes comme :
-
-CONFIG_MPLS=y
-CONFIG_MPLS_ROUTING=m
-CONFIG_MPLS_IPTUNNEL=m
-
-
-
-
-➡️ Si tu vois =m, cela veut dire que le module existe normalement.
-➡️ Si tu vois =y, c’est compilé directement dans le noyau (pas besoin de module).
-➡️ Si tu vois is not set, ton noyau ne supporte pas MPLS du tout.
-
-
-
-2. Vérifie si le module existe réellement
-
-find /lib/modules/$(uname -r) -type f -name '*mpls*'
-
-Si ça ne retourne rien, c’est que le module n’existe pas pour ton noyau.
-Si tu vois des fichiers comme mpls_gso.ko ou mpls_router.ko, tu peux les charger avec modprobe.
-
-
-3. Activation : 
-Ne pas faire en mode super utilisateur
-Suivre l'ordre
+sudo depmod -a
+modinfo mpls_router
+modinfo mpls_iptunnel
 sudo modprobe mpls_router
-sudo modprobe mpls_gso
-sudo modprobe mpls_tunnel
+sudo modprobe mpls_iptunnel
+
 lsmod | grep mpls
 
 
-ls /proc/sys/net/mpls/conf/
+
+RQ IMPORTANT : Demarrer OSPF en --privileged
+
+### ALL ethernet(eth) et virtuethernet (veth) should capable to lauch mpls
+
+docker images
+
+docker images | grep frr_docker
 
 
-brctl show
+docker network ls
 
-more /proc/sys/net/mpls/conf/br-<numero 19de6e97aec5>/input 
-
-
-more /proc/sys/net/mpls/conf/br-<numero: 4ec516e2ef41>/input 
+docker network ls | grep -E 'frr_subnet1|frr_subnet2'
 
 
-echo 1 > /proc/sys/net/mpls/conf/br-<numero 19de6e97aec5>/input 
-echo 1 >  /proc/sys/net/mpls/conf/br-<numero: 4ec516e2ef41>/input 
-
-more  /proc/sys/net/mpls/conf/veth*/input 
-
-changer en 1 , il faut le faire un à un : 
-
-echo 1 > /proc/sys/net/mpls/conf/veth*/input 
-
-changer en 1000
-
-more /proc/sys/net/mpls/platform_labels 
-
-echo 1000 > /proc/sys/net/mpls/platform_labels 
-
-In H1 : 
+Chercher le bridge qui crée frr_subnet1 et frr_subnet2 (càd chercher br-1)
+regarder il y a beaucoup d'interface br avec : 
 ifconfig
 
-more /proc/sys/net/mpls/conf/eth0/input 
+Pour verifier quelle interface bridge connecté avec les routeurs et quelle interface faire: 
+brctl show 
 
-echo 1 > /proc/sys/net/mpls/conf/eth0/input 
+<network_id> <name>
+
+eg : 
+9b48052e1fdd   frr_subnet1
+19de40ff39cf   frr_subnet2
+
+avec brctl show regarde 
+br-9b48052e1fdd  
+ou 
+br-19de40ff39cf
+
+Regarder aussi le veth
+eg : 
+Pour br-19de40ff39cf ou  frr_subnet2
+veth63ab4c2  et vethdaed0a9 
+Pour br-9b48052e1fdd  ou  frr_subnet1
+vethd34a569  et vethda3dff7
+
+comment ses interfaces sont connéctés
+eg :
+Dans H1
+
+ip addr show | grep veth63ab
+
+regarder les numeros pour voir si ca match
+391 : veth63ab4c2@if390
+
+faire pour H2 si ca match les numeros 391 et 390
+ip addr show 
+
+ca match pas normalement
+
+faire pour H3 si ca match les numeros 390 et 391
+ip addr show 
+
+ca match normalement
+
+Etape 1 : Autorisation de MPLS
+Faire pour la machine hote et les conteneurs (dans terminal de H1, H2, H3)
+lsmod | grep mpls
+sudo modprobe mpls_router
+sudo modprobe mpls_iptunnel
+ 
+Etape 2 : L'interface devrait etre capable aussi de repondre mpls
+ls /proc/sys/net/mpls/conf
+
+Beaucoup d'interfaces
+
+Les interfaces à modifier sont dans : brctl show 
+càd 
+br-19de40ff39cf
+br-9b48052e1fdd 
+veth63ab4c2  et vethdaed0a9
+vethd34a569  et vethda3dff7
+
+ls /proc/sys/net/mpls/conf/br-19de40ff39cf/input
+
+more  /proc/sys/net/mpls/conf/br-19de40ff39cf/input
+
+echo 1 >  /proc/sys/net/mpls/conf/br-19de40ff39cf/input
+
+more  /proc/sys/net/mpls/conf/br*/input
+more  /proc/sys/net/mpls/conf/veth*/input
 
 
 
-CONTENEUR : 
-
-Ensuite, active MPLS sur les interfaces de l’hôte que Docker utilise (souvent br-* ou veth*) :
-for i in $(ls /proc/sys/net/mpls/conf/); do echo 1 | sudo tee /proc/sys/net/mpls/conf/$i/input; done
+more  /proc/sys/net/mpls/platform_labels 
+100000
 
 
-Vérifie ensuite :
-cat /proc/sys/net/mpls/platform_labels
+Dans H1 faire pareil pour eth1 (ayant l'adresse 11.11.x.x ou 12.12.x.x) et l0
+faire 
+ifconfig
+faire 
+more /proc/sys/net/mpls/conf/eth1/input
+echo 1 > /proc/sys/net/mpls/conf/eth1/input
+more /proc/sys/net/mpls/conf/eth1/input
+more /proc/sys/net/mpls/conf/l0/input
+echo 1 > /proc/sys/net/mpls/conf/l0/input
+more /proc/sys/net/mpls/conf/l0/input
 
-In terminal 1 : 
 
+Dans H2 faire pareil pour eth1 (ayant l'adresse 11.11.x.x ou 12.12.x.x) et l0
+faire 
+ifconfig
+faire 
+more /proc/sys/net/mpls/conf/eth1/input
+echo 1 > /proc/sys/net/mpls/conf/eth1/input
+more /proc/sys/net/mpls/conf/eth1/input
+more /proc/sys/net/mpls/conf/l0/input
+echo 1 > /proc/sys/net/mpls/conf/l0/input
+more /proc/sys/net/mpls/conf/l0/input
+
+
+Dans H3 faire pareil pour eth1 (ayant l'adresse 11.11.x.x ou 12.12.x.x) et l0
+faire 
+ifconfig
+faire 
+more /proc/sys/net/mpls/conf/eth1/input
+echo 1 > /proc/sys/net/mpls/conf/eth1/input
+more /proc/sys/net/mpls/conf/eth1/input
+more /proc/sys/net/mpls/conf/l0/input
+echo 1 > /proc/sys/net/mpls/conf/l0/input
+more /proc/sys/net/mpls/conf/l0/input
+
+
+Dans H1 H2 H3 faire :
+systemctl restart frr
 vtysh
-
 show mpls status
 
+devrait etre yes
 
-In terminal manager : 
 
-
+SI VOUS VOULEZ DESACTIVER FAIRE : 
+stopper les docker et faire 
 lsmod | grep mpls
 
 rmmod mpls_iptunnel
-
-
-
-
-
+rmmod mpls_router
