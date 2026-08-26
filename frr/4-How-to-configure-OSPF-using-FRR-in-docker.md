@@ -19,15 +19,15 @@ docker network rm -f frr_subnet2
 
 ## Running all image
 ```
-docker run --name H1 --hostname H1 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash 
+docker run --privileged --name H1 --hostname H1 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash 
 ```
 In new terminal ctrl+shift+T
 ```
-docker run --name  H2 --hostname H2 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash 
+docker run --privileged --name  H2 --hostname H2 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash 
 ```
 In new terminal ctrl+shift+T
 ```
-docker run --name H3  --hostname H3 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
+docker run --privileged --name H3  --hostname H3 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --rm -it frr_docker:h1 bash
 ```
 ## Disconnect all brctl
 In new terminal ctrl+shift+T
