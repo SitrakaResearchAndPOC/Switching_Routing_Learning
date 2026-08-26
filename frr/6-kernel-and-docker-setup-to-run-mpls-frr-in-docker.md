@@ -64,13 +64,14 @@ Should find something like :
 <network_id> <name> </br>
 </br>
 eg : </br> 
-9b48052e1fdd   frr_subnet1 </br>
-19de40ff39cf   frr_subnet2 </br>
+9b48052e1fdd       frr_subnet1 </br>
+19de40ff39cf      frr_subnet2 </br>
 </br>
 Find br-... using </br></br>
 ```
-brctl show regard
+brctl show 
 ```
+regard
 br-9b48052e1fdd  </br>
 OR </br>
 br-19de40ff39cf </br>
@@ -126,25 +127,55 @@ brctl show
 br-19de40ff39cf </br>
 br-9b48052e1fdd </br> 
 veth63ab4c2 and vethdaed0a9 </br>
-vethd34a569 abd vethda3dff7 </br>
+vethd34a569 and vethda3dff7 </br>
 </br>
-Finding all interfaces
+Finding  and configuring all interfaces
 ```
 ls /proc/sys/net/mpls/conf/br-19de40ff39cf/input
 ```
-Finding the input of interfaces
+Finding the input of interfaces (for frr_subnet1 then frr_subnet2)
+```
+more  /proc/sys/net/mpls/conf/br-9b48052e1fdd/input
+echo 1 >  /proc/sys/net/mpls/conf/br-9b48052e1fdd/input
+more  /proc/sys/net/mpls/conf/br-9b48052e1fdd /input
+```
 ```
 more  /proc/sys/net/mpls/conf/br-19de40ff39cf/input
-```
-```
 echo 1 >  /proc/sys/net/mpls/conf/br-19de40ff39cf/input
+more  /proc/sys/net/mpls/conf/br-19de40ff39cf/input
 ```
-Finding final configuration of input 
+
+Finding final all configuration of input bridge
 ```
 more  /proc/sys/net/mpls/conf/br*/input
 ```
+the number of 1 should be 2. </br>
+Finding the input of veth (vethd34a569 abd vethda3dff7 and veth63ab4c2 and vethdaed0a9 )
+```
+more  /proc/sys/net/mpls/conf/vethd34a569/input
+echo 1 >  /proc/sys/net/mpls/conf/vethd34a569/input
+more  /proc/sys/net/mpls/conf/vethd34a569/input
+```
+```
+more  /proc/sys/net/mpls/conf/vethda3dff7/input
+echo 1 >  /proc/sys/net/mpls/conf/vethda3dff7/input
+more  /proc/sys/net/mpls/conf/vethda3dff7/input
+```
+```
+more  /proc/sys/net/mpls/conf/veth63ab4c2/input
+echo 1 >  /proc/sys/net/mpls/conf/veth63ab4c2/input
+more  /proc/sys/net/mpls/conf/veth63ab4c2/input
+```
+```
+more  /proc/sys/net/mpls/conf/vethdaed0a9/input
+echo 1 >  /proc/sys/net/mpls/conf/vethdaed0a9/input
+more  /proc/sys/net/mpls/conf/vethdaed0a9/input
+```
+Finding final all configuration of input Veth
 ```
 more  /proc/sys/net/mpls/conf/veth*/input
+the number of 1 should be 4. </br>
+
 ```
 Finding configuration of plateform label
 ```
